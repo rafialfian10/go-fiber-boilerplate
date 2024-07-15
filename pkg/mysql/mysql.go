@@ -13,7 +13,6 @@ var DB *gorm.DB
 func DatabaseInit() {
 	var err error
 
-	// get data `host`, `user`, `password`, `database name`, and `port` from env
 	var DB_NAME = os.Getenv("DB_NAME")
 	var DB_USER = os.Getenv("DB_USER")
 	var DB_PASSWORD = os.Getenv("DB_PASSWORD")

@@ -18,10 +18,9 @@ type Users struct {
 	Gender          string `gorm:"type:text"`
 	Address         string `gorm:"type:text"`
 	RoleID          uint
+	Role            Role
 	Image           string `gorm:"type:varchar(255)"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	gorm.DeletedAt
-	// parent
-	Role Role
 }

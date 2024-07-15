@@ -14,7 +14,6 @@ import (
 func (h *handlerAuth) Login(c *fiber.Ctx) error {
 	var request dto.LoginRequest
 
-	// Get request data
 	err := c.BodyParser(&request)
 	if err != nil {
 		response := dto.Result{
@@ -33,7 +32,6 @@ func (h *handlerAuth) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	// Find user data
 	user, err := h.UserRepository.GetUserByEmail(request.Email)
 	if err != nil {
 		response := dto.Result{
@@ -70,7 +68,6 @@ func (h *handlerAuth) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	// Send response
 	response := dto.Result{
 		Status:  http.StatusOK,
 		Message: "OK",

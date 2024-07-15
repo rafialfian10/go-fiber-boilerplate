@@ -180,5 +180,4 @@ func updateRole(user *models.Users, requestData uint) {
 	if requestData != 0 && requestData != user.RoleID {
 		user.RoleID = requestData
 	}
-
 }

@@ -14,10 +14,10 @@ func Logger() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		db := mysql.DB
 
-		// Read entire request body
 		reqBody := c.Request().Body()
 
 		logData := models.Log{
+			// UserID:    userId,
 			Date:      time.Now(),
 			IPAddress: c.IP(),
 			Host:      c.Hostname(),

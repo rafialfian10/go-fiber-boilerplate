@@ -8,7 +8,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// verify token
 func VerifyToken(tokenString string) (*jwt.Token, error) {
 	tokenString = strings.Replace(tokenString, "Bearer ", "", -1)
 
@@ -29,7 +28,6 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-// decode token
 func DecodeToken(tokenString string) (jwt.MapClaims, error) {
 	// verify token
 	token, err := VerifyToken(tokenString)

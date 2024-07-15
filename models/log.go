@@ -5,7 +5,9 @@ import (
 )
 
 type Log struct {
-	ID          uint
+	ID uint
+	// UserID      uuid.UUID `gorm:"type:varchar(36);not null"`
+	// User        Users     `gorm:"foreignKey:UserID;references:ID"`
 	Date        time.Time
 	IPAddress   string `gorm:"type:varchar(255)"`
 	Host        string `gorm:"type:varchar(255)"`
@@ -15,5 +17,4 @@ type Log struct {
 	File        string
 	ResposeTime float64
 	StatusCode  int
-	// Message     string `gorm:"type:varchar(255)"`
 }

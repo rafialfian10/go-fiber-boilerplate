@@ -9,10 +9,10 @@ import (
 	"github.com/asidikrdn/otptimize"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 
 	"go-restapi-boilerplate/database"
+	"go-restapi-boilerplate/pkg/middleware"
 	"go-restapi-boilerplate/pkg/mysql"
 	"go-restapi-boilerplate/routes"
 )
@@ -42,17 +42,17 @@ func main() {
 	}
 	otptimize.ConnectionInit(mailConfig, redisConfig)
 
-	// Database migration & seeder
-	if !database.IsDatabaseSeeded() { // Check if database is already seeded
-		database.RunMigration()
-		database.RunSeeder()
-	}
+	// Database seeder and migration
+	database.RunMigration()
+	// database.RunSeeder()
+	// database.DropMigration()
 
 	// Create a new Fiber instance
 	app := fiber.New()
 
 	// Middleware
-	app.Use(logger.New())
+	// app.Use(middleware.UserAuth())
+	app.Use(middleware.Logger())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*", // Replace with your allowed origins
 		AllowMethods: "HEAD, OPTIONS, GET, POST, PUT, PATCH, DELETE",

@@ -6,7 +6,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// generate token
 func GenerateToken(claims *jwt.MapClaims) (string, error) {
 	// create new token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

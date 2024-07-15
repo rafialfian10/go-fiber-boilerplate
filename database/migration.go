@@ -7,11 +7,11 @@ import (
 	"log"
 )
 
-// migration up
 func RunMigration() {
 	err := mysql.DB.AutoMigrate(
 		&models.Log{},
-		&models.Role{}, &models.Users{},
+		&models.Role{},
+		&models.Users{},
 		// put another models struct here
 	)
 	if err != nil {
@@ -22,11 +22,11 @@ func RunMigration() {
 	fmt.Println("Migration up completed successfully")
 }
 
-// migration down
 func DropMigration() {
 	err := mysql.DB.Migrator().DropTable(
 		&models.Log{},
-		&models.Role{}, &models.Users{},
+		&models.Role{},
+		&models.Users{},
 		// put another models struct here
 	)
 

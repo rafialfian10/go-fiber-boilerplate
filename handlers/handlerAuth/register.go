@@ -15,7 +15,6 @@ import (
 func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 	var request dto.RegisterRequest
 
-	// get request data
 	if err := c.BodyParser(&request); err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
@@ -44,7 +43,6 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	// create new user
 	user := models.Users{
 		ID:              uuid.New(),
 		FullName:        request.FullName,
@@ -65,13 +63,6 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	// get image from context
-	// image, ok := c.Locals("image").(string)
-	// if ok {
-	// 	user.Image = image
-	// }
-
-	// save new user data to database
 	addedUser, err := h.UserRepository.CreateUser(&user)
 	if err != nil {
 		response := dto.Result{
@@ -84,7 +75,6 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 	// generate and send otp
 	go otptimize.GenerateAndSendOTP(6, 7, os.Getenv("APP_NAME"), user.FullName, user.Email)
 
-	// reload data
 	newUser, err := h.UserRepository.GetUserByID(addedUser.ID)
 	if err != nil {
 		response := dto.Result{
@@ -94,7 +84,6 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	// send response
 	response := dto.Result{
 		Status:  http.StatusCreated,
 		Message: "OK",
