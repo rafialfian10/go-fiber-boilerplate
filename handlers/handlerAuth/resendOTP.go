@@ -7,29 +7,29 @@ import (
 	"regexp"
 
 	"github.com/asidikrdn/otptimize"
-
 	"github.com/gofiber/fiber/v2"
 )
 
 func (h *handlerAuth) ResendOTP(c *fiber.Ctx) error {
 	email := c.Params("email")
 
-	// Ekspresi reguler untuk validasi email
-	regexStr := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	// Regular expression pattern for validating email
+	emailRegexPattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 
-	// Compile regex
-	regex := regexp.MustCompile(regexStr)
+	// Compile the regex
+	emailRegex := regexp.MustCompile(emailRegexPattern)
 
-	// check email
-	if !regex.MatchString(email) {
+	// Validate email format
+	if !emailRegex.MatchString(email) {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
-			Message: "Email invalid",
+			Message: "Invalid email format",
 		}
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	user, err := h.UserRepository.GetUserByEmail(email)
+	// Check if email is registered
+	user, err := h.UserRepository.GetUserByEmailOrPhone(email, "")
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
@@ -38,6 +38,7 @@ func (h *handlerAuth) ResendOTP(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
+	// Check if email is already verified
 	if user.IsEmailVerified {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
@@ -46,7 +47,15 @@ func (h *handlerAuth) ResendOTP(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	otptimize.GenerateAndSendOTP(6, 7, os.Getenv("APP_NAME"), user.FullName, user.Email)
+	// Generate and send OTP
+	err = otptimize.GenerateAndSendOTP(6, 7, os.Getenv("APP_NAME"), user.FullName, user.Email)
+	if err != nil {
+		response := dto.Result{
+			Status:  http.StatusInternalServerError,
+			Message: "Failed to send OTP, please try again later",
+		}
+		return c.Status(http.StatusInternalServerError).JSON(response)
+	}
 
 	response := dto.Result{
 		Status:  http.StatusOK,

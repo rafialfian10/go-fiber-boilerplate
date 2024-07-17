@@ -19,7 +19,7 @@ func (h *handlerAuth) VerifyEmail(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	user, err := h.UserRepository.GetUserByEmail(request.Email)
+	user, err := h.UserRepository.GetUserByEmailOrPhone(request.Email, "")
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,

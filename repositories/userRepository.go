@@ -16,7 +16,7 @@ type UserRepository interface {
 	UpdateUser(user *models.User) (*models.User, error)
 	UpdateUserByAdmin(user *models.User) (*models.User, error)
 	DeleteUser(user *models.User, id uuid.UUID) (*models.User, error)
-	GetUserByEmail(email string) (*models.User, error)
+	GetUserByEmailOrPhone(email, phone string) (*models.User, error)
 }
 
 func (r *repository) GetUsers(limit, offset int, filter dto.UserFilter, searchQuery string) (*[]models.User, int64, error) {
@@ -97,5 +97,11 @@ func (r *repository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 
 	err := r.db.Preload("Role").Where("email = ?", email).First(&user).Error
+	return &user, err
+}
+
+func (r *repository) GetUserByEmailOrPhone(email, phone string) (*models.User, error) {
+	var user models.User
+	err := r.db.Preload("Role").Where("email = ? OR phone = ?", email, phone).First(&user).Error
 	return &user, err
 }

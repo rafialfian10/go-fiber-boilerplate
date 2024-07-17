@@ -23,13 +23,22 @@ func (h *handlerAuth) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	user, err := h.UserRepository.GetUserByEmail(request.Email)
+	user, err := h.UserRepository.GetUserByEmailOrPhone(request.Email, "")
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
 			Message: "User not found",
 		}
 		return c.Status(http.StatusBadRequest).JSON(response)
+	}
+
+	// Check if email is verified
+	if !user.IsEmailVerified {
+		response := dto.Result{
+			Status:  http.StatusUnauthorized,
+			Message: "Email is not verified",
+		}
+		return c.Status(http.StatusUnauthorized).JSON(response)
 	}
 
 	// Check password

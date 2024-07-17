@@ -23,27 +23,26 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	// check email
-	_, err := h.UserRepository.GetUserByEmail(request.Email)
+	// Check email and phone
+	user, err := h.UserRepository.GetUserByEmailOrPhone(request.Email, request.Phone)
 	if err == nil {
-		response := dto.Result{
-			Status:  http.StatusBadRequest,
-			Message: "Email already registered",
+		if user.Email == request.Email {
+			response := dto.Result{
+				Status:  http.StatusBadRequest,
+				Message: "Email already registered",
+			}
+			return c.Status(http.StatusBadRequest).JSON(response)
 		}
-		return c.Status(http.StatusBadRequest).JSON(response)
+		if user.Phone == request.Phone {
+			response := dto.Result{
+				Status:  http.StatusBadRequest,
+				Message: "Phone number already registered",
+			}
+			return c.Status(http.StatusBadRequest).JSON(response)
+		}
 	}
 
-	// check phone
-	_, err = h.UserRepository.GetUserByEmail(request.Phone)
-	if err == nil {
-		response := dto.Result{
-			Status:  http.StatusBadRequest,
-			Message: "Phone number already registered",
-		}
-		return c.Status(http.StatusBadRequest).JSON(response)
-	}
-
-	user := models.User{
+	newUser := models.User{
 		ID:              uuid.New(),
 		FullName:        request.FullName,
 		Email:           request.Email,
@@ -53,8 +52,8 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		RoleID:          3,
 	}
 
-	// hashing password
-	user.Password, err = bcrypt.HashingPassword(request.Password)
+	// Hashing password
+	newUser.Password, err = bcrypt.HashingPassword(request.Password)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -63,7 +62,7 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	addedUser, err := h.UserRepository.CreateUser(&user)
+	addedUser, err := h.UserRepository.CreateUser(&newUser)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -72,10 +71,10 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	// generate and send otp
-	go otptimize.GenerateAndSendOTP(6, 7, os.Getenv("APP_NAME"), user.FullName, user.Email)
+	// Generate and send OTP
+	go otptimize.GenerateAndSendOTP(6, 7, os.Getenv("APP_NAME"), newUser.FullName, newUser.Email)
 
-	newUser, err := h.UserRepository.GetUserByID(addedUser.ID)
+	createdUser, err := h.UserRepository.GetUserByID(addedUser.ID)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -87,7 +86,7 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 	response := dto.Result{
 		Status:  http.StatusCreated,
 		Message: "Register successfully",
-		Data:    convertRegisterResponse(newUser),
+		Data:    convertRegisterResponse(createdUser),
 	}
 	return c.Status(http.StatusCreated).JSON(response)
 }
