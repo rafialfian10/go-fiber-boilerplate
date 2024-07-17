@@ -144,39 +144,39 @@ func (h *handlerUser) UpdateUserByAdmin(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(response)
 }
 
-func updateFullname(user *models.Users, requestData string) {
+func updateFullname(user *models.User, requestData string) {
 	if requestData != "" && requestData != user.FullName {
 		user.FullName = requestData
 	}
 }
 
-func updateEmail(user *models.Users, requestData string) {
+func updateEmail(user *models.User, requestData string) {
 	if requestData != "" && requestData != user.Email {
 		user.IsEmailVerified = false
 		user.Email = requestData
 	}
 }
 
-func updatePhone(user *models.Users, requestData string) {
+func updatePhone(user *models.User, requestData string) {
 	if requestData != "" && requestData != user.Phone {
 		user.IsPhoneVerified = false
 		user.Phone = requestData
 	}
 }
 
-func updateGender(user *models.Users, requestData string) {
+func updateGender(user *models.User, requestData string) {
 	if requestData != "" && requestData != user.Gender {
 		user.Gender = requestData
 	}
 }
 
-func updateAddress(user *models.Users, requestData string) {
+func updateAddress(user *models.User, requestData string) {
 	if requestData != "" && requestData != user.Address {
 		user.Address = requestData
 	}
 }
 
-func updateRole(user *models.Users, requestData uint) {
+func updateRole(user *models.User, requestData uint) {
 	if requestData != 0 && requestData != user.RoleID {
 		user.RoleID = requestData
 	}

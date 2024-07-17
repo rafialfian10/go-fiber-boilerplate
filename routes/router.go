@@ -8,4 +8,6 @@ func RouterInit(app fiber.Router) {
 	User(app)
 	Role(app)
 	Auth(app)
+	Category(app)
+	Todo(app)
 }

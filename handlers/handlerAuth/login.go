@@ -23,15 +23,6 @@ func (h *handlerAuth) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	// Check if Email is provided
-	if request.Email == "" {
-		response := dto.Result{
-			Status:  http.StatusBadRequest,
-			Message: "Email is required",
-		}
-		return c.Status(http.StatusBadRequest).JSON(response)
-	}
-
 	user, err := h.UserRepository.GetUserByEmail(request.Email)
 	if err != nil {
 		response := dto.Result{
@@ -70,7 +61,7 @@ func (h *handlerAuth) Login(c *fiber.Ctx) error {
 
 	response := dto.Result{
 		Status:  http.StatusOK,
-		Message: "OK",
+		Message: "Login successfully",
 		Data:    convertLoginResponse(user, token),
 	}
 	return c.Status(http.StatusOK).JSON(response)

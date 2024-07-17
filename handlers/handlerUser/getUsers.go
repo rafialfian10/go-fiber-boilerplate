@@ -12,7 +12,7 @@ import (
 
 func (h *handlerUser) GetUsers(c *fiber.Ctx) error {
 	var (
-		users       *[]models.Users
+		users       *[]models.User
 		err         error
 		totalUser   int64
 		filterQuery dto.UserFilter

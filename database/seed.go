@@ -38,17 +38,17 @@ func RunSeeder() {
 	}
 
 	// Add Superadmin and Admin
-	if mysql.DB.Migrator().HasTable(&models.Users{}) {
-		fmt.Println("Users table exists. Seeding superadmin and admin users...")
+	if mysql.DB.Migrator().HasTable(&models.User{}) {
+		fmt.Println("User table exists. Seeding superadmin and admin users...")
 
 		// Check if user table has minimum 1 user
-		var user models.Users
+		var user models.User
 		err := mysql.DB.First(&user).Error
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			fmt.Println("No users found. Seeding default users...")
 
 			// Create superadmin user
-			newSuperAdmin := models.Users{
+			newSuperAdmin := models.User{
 				ID:              uuid.New(),
 				FullName:        "Super Admin",
 				Email:           os.Getenv("SUPERADMIN_EMAIL"),
@@ -72,7 +72,7 @@ func RunSeeder() {
 			}
 
 			// Create admin user
-			newAdmin := models.Users{
+			newAdmin := models.User{
 				ID:              uuid.New(),
 				FullName:        "Admin",
 				Email:           os.Getenv("ADMIN_EMAIL"),
@@ -100,7 +100,7 @@ func RunSeeder() {
 			fmt.Println("Error checking for existing users:", err)
 			log.Fatal("Seeding failed")
 		} else {
-			fmt.Println("Users already exist. Skipping user seeding")
+			fmt.Println("User already exist. Skipping user seeding")
 		}
 	} else {
 		log.Fatal("Table 'users' doesn't exist")

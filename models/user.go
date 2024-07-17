@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Users struct {
+type User struct {
 	ID              uuid.UUID `gorm:"type:varchar(255);primaryKey"`
 	FullName        string    `gorm:"type:varchar(255)"`
 	Email           string    `gorm:"type:varchar(255);unique"`
@@ -22,5 +22,5 @@ type Users struct {
 	Image           string `gorm:"type:varchar(255)"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	gorm.DeletedAt
+	DeletedAt       gorm.DeletedAt
 }

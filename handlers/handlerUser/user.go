@@ -14,7 +14,7 @@ func HandlerUser(userRepository repositories.UserRepository) *handlerUser {
 	return &handlerUser{userRepository}
 }
 
-func convertUserResponse(user *models.Users) *dto.UserResponse {
+func convertUserResponse(user *models.User) *dto.UserResponse {
 	return &dto.UserResponse{
 		ID:              user.ID,
 		FullName:        user.FullName,
@@ -32,7 +32,7 @@ func convertUserResponse(user *models.Users) *dto.UserResponse {
 	}
 }
 
-func convertMultipleUserResponse(user *[]models.Users) *[]dto.UserResponse {
+func convertMultipleUserResponse(user *[]models.User) *[]dto.UserResponse {
 	var users []dto.UserResponse
 
 	for _, u := range *user {

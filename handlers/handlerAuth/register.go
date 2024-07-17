@@ -43,7 +43,7 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	user := models.Users{
+	user := models.User{
 		ID:              uuid.New(),
 		FullName:        request.FullName,
 		Email:           request.Email,
@@ -86,7 +86,7 @@ func (h *handlerAuth) RegisterUser(c *fiber.Ctx) error {
 
 	response := dto.Result{
 		Status:  http.StatusCreated,
-		Message: "OK",
+		Message: "Register successfully",
 		Data:    convertRegisterResponse(newUser),
 	}
 	return c.Status(http.StatusCreated).JSON(response)

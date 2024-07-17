@@ -14,7 +14,7 @@ func HandlerAuth(userRepository repositories.UserRepository) *handlerAuth {
 	return &handlerAuth{userRepository}
 }
 
-func convertRegisterResponse(user *models.Users) *dto.UserResponse {
+func convertRegisterResponse(user *models.User) *dto.UserResponse {
 	return &dto.UserResponse{
 		ID:              user.ID,
 		FullName:        user.FullName,
@@ -31,7 +31,7 @@ func convertRegisterResponse(user *models.Users) *dto.UserResponse {
 	}
 }
 
-func convertLoginResponse(user *models.Users, token string) *dto.LoginResponse {
+func convertLoginResponse(user *models.User, token string) *dto.LoginResponse {
 	return &dto.LoginResponse{
 		ID:       user.ID,
 		FullName: user.FullName,

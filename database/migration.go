@@ -11,7 +11,9 @@ func RunMigration() {
 	err := mysql.DB.AutoMigrate(
 		&models.Log{},
 		&models.Role{},
-		&models.Users{},
+		&models.User{},
+		&models.Category{},
+		&models.Todo{},
 		// put another models struct here
 	)
 	if err != nil {
@@ -26,7 +28,9 @@ func DropMigration() {
 	err := mysql.DB.Migrator().DropTable(
 		&models.Log{},
 		&models.Role{},
-		&models.Users{},
+		&models.User{},
+		&models.Category{},
+		&models.Todo{},
 		// put another models struct here
 	)
 
