@@ -14,6 +14,7 @@ func RunMigration() {
 		&models.User{},
 		&models.Category{},
 		&models.Disaster{},
+		&models.Image{},
 		&models.Transaction{},
 		// put another models struct here
 	)
@@ -32,6 +33,7 @@ func DropMigration() {
 		&models.User{},
 		&models.Category{},
 		&models.Disaster{},
+		&models.Image{},
 		&models.Transaction{},
 		// put another models struct here
 	)
