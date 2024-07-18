@@ -44,7 +44,7 @@ func main() {
 
 	// Database seeder and migration
 	database.RunMigration()
-	// database.RunSeeder()
+	database.RunSeeder()
 	// database.DropMigration()
 
 	// Create a new Fiber instance

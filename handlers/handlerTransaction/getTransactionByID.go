@@ -1,4 +1,4 @@
-package handlerTodo
+package handlerTransaction
 
 import (
 	"go-restapi-boilerplate/dto"
@@ -8,17 +8,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h *handlerTodo) DeleteTodo(c *fiber.Ctx) error {
+func (h *handlerTransaction) GetTransactionByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid todo ID",
+			Message: "Invalid transaction ID",
 		}
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	todo, err := h.TodoRepository.GetTodoByID(uint(id))
+	transaction, err := h.TransactionRepository.GetTransactionByID(uint(id))
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusNotFound,
@@ -27,19 +27,10 @@ func (h *handlerTodo) DeleteTodo(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(response)
 	}
 
-	deletedTodo, err := h.TodoRepository.DeleteTodo(todo)
-	if err != nil {
-		response := dto.Result{
-			Status:  http.StatusInternalServerError,
-			Message: err.Error(),
-		}
-		return c.Status(http.StatusInternalServerError).JSON(response)
-	}
-
 	response := dto.Result{
 		Status:  http.StatusOK,
-		Message: "Todo successfully deleted",
-		Data:    convertTodoResponse(deletedTodo),
+		Message: "OK",
+		Data:    convertTransactionResponse(transaction),
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }

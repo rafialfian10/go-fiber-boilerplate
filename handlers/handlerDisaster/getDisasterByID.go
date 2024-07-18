@@ -1,4 +1,4 @@
-package handlerTodo
+package handlerDisaster
 
 import (
 	"go-restapi-boilerplate/dto"
@@ -8,17 +8,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h *handlerTodo) GetTodoByID(c *fiber.Ctx) error {
+func (h *handlerDisaster) GetDisasterByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid todo ID",
+			Message: "Invalid disaster ID",
 		}
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	todo, err := h.TodoRepository.GetTodoByID(uint(id))
+	disaster, err := h.DisasterRepository.GetDisasterByID(uint(id))
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusNotFound,
@@ -30,7 +30,7 @@ func (h *handlerTodo) GetTodoByID(c *fiber.Ctx) error {
 	response := dto.Result{
 		Status:  http.StatusOK,
 		Message: "OK",
-		Data:    convertTodoResponse(todo),
+		Data:    convertDisasterResponse(disaster),
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }

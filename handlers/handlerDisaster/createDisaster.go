@@ -1,4 +1,4 @@
-package handlerTodo
+package handlerDisaster
 
 import (
 	"go-restapi-boilerplate/dto"
@@ -11,8 +11,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *handlerTodo) CreateTodo(c *fiber.Ctx) error {
-	var request dto.CreateTodoRequest
+func (h *handlerDisaster) CreateDisaster(c *fiber.Ctx) error {
+	var request dto.CreateDisasterRequest
 
 	err := c.BodyParser(&request)
 	if err != nil {
@@ -43,15 +43,28 @@ func (h *handlerTodo) CreateTodo(c *fiber.Ctx) error {
 	}
 	date, _ := time.Parse("2006-01-02", c.FormValue("date"))
 
-	todo := models.Todo{
-		UserID:      userId,
-		Title:       request.Title,
-		Description: request.Description,
-		CategoryID:  request.CategoryID,
-		Date:        date,
+	image, ok := c.Locals("image").(string)
+	if !ok {
+		response := dto.Result{
+			Status:  http.StatusBadRequest,
+			Message: "Image is not provided",
+		}
+		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	addedTodo, err := h.TodoRepository.CreateTodo(&todo)
+	disaster := models.Disaster{
+		UserID:       userId,
+		Title:        request.Title,
+		Description:  request.Description,
+		Location:     request.Location,
+		CategoryID:   request.CategoryID,
+		Date:         date,
+		Donate:       request.Donate,
+		DonateTarget: request.DonateTarget,
+		Image:        image,
+	}
+
+	addedDisaster, err := h.DisasterRepository.CreateDisaster(&disaster)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -60,7 +73,7 @@ func (h *handlerTodo) CreateTodo(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	newTodo, err := h.TodoRepository.GetTodoByID(addedTodo.ID)
+	newDisaster, err := h.DisasterRepository.GetDisasterByID(addedDisaster.ID)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -71,8 +84,8 @@ func (h *handlerTodo) CreateTodo(c *fiber.Ctx) error {
 
 	response := dto.Result{
 		Status:  http.StatusCreated,
-		Message: "Category successfully created",
-		Data:    convertTodoResponse(newTodo),
+		Message: "Disaster successfully created",
+		Data:    convertDisasterResponse(newDisaster),
 	}
 	return c.Status(http.StatusCreated).JSON(response)
 }

@@ -16,7 +16,7 @@ func User(r fiber.Router) {
 	r.Get("/users", middleware.AdminAuth(), h.GetUsers)
 	r.Get("/user/profile", middleware.UserAuth(), h.GetProfile)
 	r.Get("/user/:id", middleware.UserAuth(), h.GetUserByID)
-	r.Patch("/user/:id", middleware.UserAuth(), middleware.UploadSingleFile(), h.UpdateUser)
-	r.Patch("/user-by-superadmin/:id", middleware.SuperAdminAuth(), middleware.UploadSingleFile(), h.UpdateUserByAdmin)
+	r.Patch("/user/:id", middleware.UserAuth(), middleware.UploadSinglePhoto(), h.UpdateUser)
+	r.Patch("/user-by-superadmin/:id", middleware.SuperAdminAuth(), middleware.UploadSinglePhoto(), h.UpdateUserByAdmin)
 	r.Delete("user/:id", middleware.SuperAdminAuth(), h.DeleteUser)
 }

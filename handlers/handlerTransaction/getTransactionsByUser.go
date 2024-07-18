@@ -1,4 +1,4 @@
-package handlerTodo
+package handlerTransaction
 
 import (
 	"go-restapi-boilerplate/dto"
@@ -8,26 +8,47 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
-func (h *handlerTodo) GetTodos(c *fiber.Ctx) error {
+func (h *handlerTransaction) GetTransactionsByUser(c *fiber.Ctx) error {
 	var (
-		todos     *[]models.Todo
-		err       error
-		totalRole int64
+		transactions     *[]models.Transaction
+		err              error
+		totalTransaction int64
 	)
 
-	// get search query
+	// Get authenticated user's ID from JWT claims
+	claims, ok := c.Locals("userData").(jwt.MapClaims)
+	if !ok {
+		response := dto.Result{
+			Status:  http.StatusBadRequest,
+			Message: "User data from jwt payload is not found",
+		}
+		return c.Status(http.StatusInternalServerError).JSON(response)
+	}
+
+	userID, err := uuid.Parse(claims["id"].(string))
+	if err != nil {
+		response := dto.Result{
+			Status:  http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+		return c.Status(http.StatusInternalServerError).JSON(response)
+	}
+
+	// Get search query
 	searchQuery := c.Query("search")
 
-	// with pagination
+	// With pagination
 	if pageStr := c.Query("page"); pageStr != "" {
 		var (
 			limit  int
 			offset int
 		)
 
-		// get page position
+		// Get page position
 		page, err := strconv.Atoi(pageStr)
 		if err != nil {
 			response := dto.Result{
@@ -37,7 +58,7 @@ func (h *handlerTodo) GetTodos(c *fiber.Ctx) error {
 			return c.Status(http.StatusBadRequest).JSON(response)
 		}
 
-		// set limit (if not exist, use default limit -> 5)
+		// Set limit (if not exist, use default limit -> 5)
 		if limitStr := c.Query("limit"); limitStr != "" {
 			limit, err = strconv.Atoi(limitStr)
 			if err != nil {
@@ -51,14 +72,15 @@ func (h *handlerTodo) GetTodos(c *fiber.Ctx) error {
 			limit = 5
 		}
 
-		// set offset
+		// Set offset
 		if page == 1 {
-			offset = -1
+			offset = 0
 		} else {
 			offset = (page * limit) - limit
 		}
 
-		todos, totalRole, err = h.TodoRepository.GetTodos(limit, offset, searchQuery)
+		// Retrieve transactions by user ID
+		transactions, totalTransaction, err = h.TransactionRepository.GetTransactionsByUser(userID, limit, offset, searchQuery)
 		if err != nil {
 			response := dto.Result{
 				Status:  http.StatusNotFound,
@@ -70,16 +92,16 @@ func (h *handlerTodo) GetTodos(c *fiber.Ctx) error {
 		response := dto.Result{
 			Status:      http.StatusOK,
 			Message:     "OK",
-			TotalData:   totalRole,
-			TotalPages:  int(math.Ceil(float64(totalRole) / float64(limit))),
+			TotalData:   totalTransaction,
+			TotalPages:  int(math.Ceil(float64(totalTransaction) / float64(limit))),
 			CurrentPage: page,
-			Data:        convertMultipleTodoResponse(todos),
+			Data:        convertMultipleTransactionResponse(transactions),
 		}
 		return c.Status(http.StatusOK).JSON(response)
 	}
 
-	// without pagination
-	todos, totalRole, err = h.TodoRepository.GetTodos(-1, -1, searchQuery)
+	// Without pagination
+	transactions, totalTransaction, err = h.TransactionRepository.GetTransactionsByUser(userID, -1, -1, searchQuery)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusNotFound,
@@ -91,10 +113,10 @@ func (h *handlerTodo) GetTodos(c *fiber.Ctx) error {
 	response := dto.Result{
 		Status:      http.StatusOK,
 		Message:     "OK",
-		TotalData:   totalRole,
+		TotalData:   totalTransaction,
 		TotalPages:  1,
 		CurrentPage: 1,
-		Data:        convertMultipleTodoResponse(todos),
+		Data:        convertMultipleTransactionResponse(transactions),
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }

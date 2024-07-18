@@ -46,11 +46,11 @@ func (h *handlerUser) UpdateUser(c *fiber.Ctx) error {
 	updateGender(user, request.Gender)
 	updateAddress(user, request.Address)
 
-	image, ok := c.Locals("image").(string)
+	image, ok := c.Locals("photo").(string)
 	if ok && image != "" {
 		if user.Image != "" {
 			if !helpers.DeleteFile(user.Image) {
-				fmt.Println("Failed to delete image file")
+				fmt.Println("Failed to delete photo file")
 			}
 		}
 		user.Image = image

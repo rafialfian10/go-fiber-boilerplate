@@ -13,7 +13,8 @@ func RunMigration() {
 		&models.Role{},
 		&models.User{},
 		&models.Category{},
-		&models.Todo{},
+		&models.Disaster{},
+		&models.Transaction{},
 		// put another models struct here
 	)
 	if err != nil {
@@ -30,7 +31,8 @@ func DropMigration() {
 		&models.Role{},
 		&models.User{},
 		&models.Category{},
-		&models.Todo{},
+		&models.Disaster{},
+		&models.Transaction{},
 		// put another models struct here
 	)
 

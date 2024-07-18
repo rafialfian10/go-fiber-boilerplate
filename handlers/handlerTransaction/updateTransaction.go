@@ -1,16 +1,15 @@
-package handlerTodo
+package handlerTransaction
 
 import (
 	"go-restapi-boilerplate/dto"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h *handlerTodo) UpdateTodo(c *fiber.Ctx) error {
-	var request dto.UpdateTodoRequest
+func (h *handlerTransaction) UpdateTransaction(c *fiber.Ctx) error {
+	var request dto.UpdateTransactionRequest
 
 	if err := c.BodyParser(&request); err != nil {
 		response := dto.Result{
@@ -24,12 +23,12 @@ func (h *handlerTodo) UpdateTodo(c *fiber.Ctx) error {
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid todo ID",
+			Message: "Invalid transaction ID",
 		}
 		return c.Status(http.StatusBadRequest).JSON(response)
 	}
 
-	todo, err := h.TodoRepository.GetTodoByID(uint(id))
+	transaction, err := h.TransactionRepository.GetTransactionByID(uint(id))
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusNotFound,
@@ -38,35 +37,11 @@ func (h *handlerTodo) UpdateTodo(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(response)
 	}
 
-	if request.Title != "" && request.Title != todo.Title {
-		todo.Title = request.Title
+	if request.Status != "" && request.Status != transaction.Status {
+		transaction.Status = request.Status
 	}
 
-	if request.Description != "" && request.Description != todo.Description {
-		todo.Description = request.Description
-	}
-
-	if request.CategoryID != 0 && request.CategoryID != todo.CategoryID {
-		todo.CategoryID = request.CategoryID
-	}
-
-	if request.Date != "" {
-		date, err := time.Parse("2006-01-02", request.Date)
-		if err != nil {
-			response := dto.Result{
-				Status:  http.StatusBadRequest,
-				Message: "Invalid date format",
-			}
-			return c.Status(http.StatusBadRequest).JSON(response)
-		}
-		todo.Date = date
-	}
-
-	if request.IsDone {
-		todo.IsDone = request.IsDone
-	}
-
-	updatedTodo, err := h.TodoRepository.UpdateTodo(todo)
+	updatedTransaction, err := h.TransactionRepository.UpdateTransaction(transaction)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusInternalServerError,
@@ -75,7 +50,7 @@ func (h *handlerTodo) UpdateTodo(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(response)
 	}
 
-	todo, err = h.TodoRepository.GetTodoByID(updatedTodo.ID)
+	transaction, err = h.TransactionRepository.GetTransactionByID(updatedTransaction.ID)
 	if err != nil {
 		response := dto.Result{
 			Status:  http.StatusNotFound,
@@ -86,8 +61,8 @@ func (h *handlerTodo) UpdateTodo(c *fiber.Ctx) error {
 
 	response := dto.Result{
 		Status:  http.StatusOK,
-		Message: "Todo successfully updated",
-		Data:    convertTodoResponse(todo),
+		Message: "Transaction successfully updated",
+		Data:    convertTransactionResponse(transaction),
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }

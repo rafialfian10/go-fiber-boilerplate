@@ -9,5 +9,6 @@ func RouterInit(app fiber.Router) {
 	Role(app)
 	Auth(app)
 	Category(app)
-	Todo(app)
+	Disaster(app)
+	Transaction(app)
 }

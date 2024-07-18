@@ -32,10 +32,10 @@ func convertUserResponse(user *models.User) *dto.UserResponse {
 	}
 }
 
-func convertMultipleUserResponse(user *[]models.User) *[]dto.UserResponse {
+func convertMultipleUserResponse(userData *[]models.User) *[]dto.UserResponse {
 	var users []dto.UserResponse
 
-	for _, u := range *user {
+	for _, u := range *userData {
 		users = append(users, *convertUserResponse(&u))
 	}
 
