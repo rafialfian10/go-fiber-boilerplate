@@ -29,6 +29,7 @@ func convertTransactionResponse(transaction *models.Transaction) *dto.Transactio
 			Donate:       transaction.Disaster.Donate,
 			DonateTarget: transaction.Disaster.DonateTarget,
 			Image:        transaction.Disaster.Image,
+			IsTrending:   transaction.Disaster.IsTrending,
 			UserID:       transaction.Disaster.UserID,
 			User: dto.UserResponse{
 				ID:       transaction.Disaster.User.ID,

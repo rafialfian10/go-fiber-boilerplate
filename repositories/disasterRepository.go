@@ -48,7 +48,18 @@ func (r *repository) CreateDisaster(disaster *models.Disaster) (*models.Disaster
 }
 
 func (r *repository) UpdateDisaster(disaster *models.Disaster) (*models.Disaster, error) {
-	err := r.db.Model(disaster).Preload("User.Role").Preload("Category").Updates(*disaster).Error
+	// err := r.db.Preload("User.Role").Preload("Category").Save(disaster).Error
+	err := r.db.Model(&models.Disaster{}).Where("id = ?", disaster.ID).Updates(map[string]interface{}{
+		"Title":        disaster.Title,
+		"Description":  disaster.Description,
+		"Location":     disaster.Location,
+		"CategoryID":   disaster.CategoryID,
+		"Date":         disaster.Date,
+		"Donate":       disaster.Donate,
+		"DonateTarget": disaster.DonateTarget,
+		"Image":        disaster.Image,
+		"IsTrending":   disaster.IsTrending,
+	}).Error
 
 	return disaster, err
 }

@@ -73,7 +73,7 @@ func (r *repository) CreateTransaction(transaction *models.Transaction) (*models
 }
 
 func (r *repository) UpdateTransaction(transaction *models.Transaction) (*models.Transaction, error) {
-	err := r.db.Model(transaction).Preload("User.Role").Preload("Disaster.User.Role").Preload("Disaster.Category").Updates(*transaction).Error
+	err := r.db.Preload("User.Role").Preload("Disaster.User.Role").Preload("Disaster.Category").Save(transaction).Error
 
 	return transaction, err
 }

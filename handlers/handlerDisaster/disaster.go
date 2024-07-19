@@ -26,6 +26,7 @@ func convertDisasterResponse(disaster *models.Disaster) *dto.DisasterResponse {
 		Donate:       disaster.Donate,
 		DonateTarget: disaster.DonateTarget,
 		Image:        disaster.Image,
+		IsTrending:   disaster.IsTrending,
 		UserID:       disaster.UserID,
 		User: dto.UserResponse{
 			ID:       disaster.User.ID,

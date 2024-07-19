@@ -11,6 +11,7 @@ type CreateDisasterRequest struct {
 	Donate       int    `json:"donate" form:"donate"`
 	DonateTarget int    `json:"donate_target" form:"donate_target"`
 	Image        string `json:"image" form:"image"`
+	IsTrending   bool   `json:"is_trending" form:"is_trending"`
 }
 
 type UpdateDisasterRequest struct {
@@ -22,6 +23,7 @@ type UpdateDisasterRequest struct {
 	Donate       int    `json:"donate" form:"donate"`
 	DonateTarget int    `json:"donate_target" form:"donate_target"`
 	Image        string `json:"image" form:"image"`
+	IsTrending   bool   `json:"is_trending" form:"is_trending"`
 }
 
 type DisasterResponse struct {
@@ -37,4 +39,5 @@ type DisasterResponse struct {
 	Donate       int          `json:"donate"`
 	DonateTarget int          `json:"donate_target"`
 	Image        string       `json:"image"`
+	IsTrending   bool         `json:"is_trending"`
 }

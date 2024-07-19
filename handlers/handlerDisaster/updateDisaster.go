@@ -86,6 +86,8 @@ func (h *handlerDisaster) UpdateDisaster(c *fiber.Ctx) error {
 		disaster.Image = image
 	}
 
+	disaster.IsTrending = request.IsTrending
+
 	updatedDisaster, err := h.DisasterRepository.UpdateDisaster(disaster)
 	if err != nil {
 		response := dto.Result{

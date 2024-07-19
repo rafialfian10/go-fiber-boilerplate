@@ -62,6 +62,7 @@ func (h *handlerDisaster) CreateDisaster(c *fiber.Ctx) error {
 		Donate:       request.Donate,
 		DonateTarget: request.DonateTarget,
 		Image:        image,
+		IsTrending:   request.IsTrending,
 	}
 
 	addedDisaster, err := h.DisasterRepository.CreateDisaster(&disaster)

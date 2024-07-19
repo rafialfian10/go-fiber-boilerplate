@@ -20,6 +20,7 @@ type Disaster struct {
 	Donate       int       `gorm:"not null"`
 	DonateTarget int       `gorm:"not null"`
 	Image        string    `gorm:"type:varchar(255)"`
+	IsTrending   bool      `gorm:"not null;default:false"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt
