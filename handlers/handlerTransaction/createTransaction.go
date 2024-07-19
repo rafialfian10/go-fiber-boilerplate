@@ -116,7 +116,11 @@ func (h *handlerTransaction) CreateTransaction(c *fiber.Ctx) error {
 	response := dto.Result{
 		Status:  http.StatusCreated,
 		Message: "Transaction successfully paid",
-		Data:    convertTransactionResponse(transactionUpdated),
+		Data: map[string]interface{}{
+			"data":                  convertTransactionResponse(transactionUpdated),
+			"midtrans_token":        snapResp.Token,
+			"midtrans_redirect_url": snapResp.RedirectURL,
+		},
 	}
 	return c.Status(http.StatusCreated).JSON(response)
 }
@@ -200,18 +204,50 @@ func SendMail(status string, transaction models.Transaction) {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>Document</title>
 				<style>
-					h1 {
-						color: brown;
+					.container {
+						text-align: center;
+						padding: 30px;
+						background-color: rgb(252, 163, 163);
+					}
+					.image {
+						display: flex !important;
+						justify-content: center !important;
+						align-items: center !important;
+					}
+					h2 {
+						text-align: center;
+						font-weight: 800;
+					}
+					ul {
+						display: inline-block;
+						width: 25vw;
+						margin-bottom: 50px;
+						text-align: left;
+						list-style-type: none;
+						padding: 0px;
+					}
+					li {
+						margin-bottom: 10px;
+					}
+					p {
+						text-align: center;
+						font-weight: 800;
 					}
 				</style>
 			</head>
 			<body>
-				<h2>Donation :</h2>
-				<ul style="list-style-type:none;">
-					<li>Disaster : %s</li>
-					<li>Total Donation: Rp.%s</li>
-					<li>Status : <b>%s</b></li>
-				</ul>
+				<div class="container">
+					<div class="image">
+						<img src="https://res.cloudinary.com/dixxnrj9b/image/upload/v1721350769/holyways/holyways-icon_sxcgnz.png" alt="Holyways Icon" width="100px" height="70px" style="margin: auto" />
+					</div>
+					<h2>Donation Details:</h2>
+					<ul>
+						<li>Disaster: %s</li>
+						<li>Total Donation: Rp.%s</li>
+						<li>Status: <b>%s</b></li>
+					</ul>
+					<p>Thank you for your donation through Holyways!</p>
+				</div>
 			</body>
 		</html>`, title, donate, status))
 
